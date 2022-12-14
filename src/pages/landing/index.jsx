@@ -1,35 +1,42 @@
 /* eslint no-undef: 0 */
 /* eslint arrow-parens: 0 */
-import React from 'react'
-import { enquireScreen } from 'enquire-js'
-import Banner3 from './Banner3'
-import Footer0 from './Footer0'
-import Headers from '../../layouts/headers'
+import React from 'react';
+import { enquireScreen } from 'enquire-js';
+import Banner3 from './Banner3';
+import Footer0 from './Footer0';
+import Headers from '../../layouts/headers';
+import { getUrlInfo,Login } from '../../utils/handle';
+import { Banner30DataSource, Footer00DataSource } from './data.source';
+import './less/antMotionStyle.less';
 
-import { Banner30DataSource, Footer00DataSource } from './data.source'
-import './less/antMotionStyle.less'
-
-let isMobile = {}
+let isMobile = {};
+let userName = '';
 enquireScreen(b => {
-  isMobile = b
-})
+  isMobile = b;
+});
 
-const { location = {} } = typeof window !== 'undefined' ? window : {}
+const { location = {} } = typeof window !== 'undefined' ? window : {};
 
 export default class Home extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       isMobile,
+      userName,
       show: !location.port, // 如果不是 dva 2.0 请删除
-    }
+    };
   }
 
   componentDidMount() {
+    // get url
+    userName = getUrlInfo(window.location.href)
+    localStorage.setItem('userName', userName)
+    // Login
+    Login(userName)
     // 适配手机屏幕;
     enquireScreen(b => {
       this.setState({ isMobile: !!b })
-    })
+    });
     // dva 2.0 样式在组件渲染之后动态加载，导致滚动组件不生效；线上不影响；
     /* 如果不是 dva 2.0 请删除 start */
     if (location.port) {
@@ -37,8 +44,8 @@ export default class Home extends React.Component {
       setTimeout(() => {
         this.setState({
           show: true,
-        })
-      }, 500)
+        });
+      }, 500);
     }
     /* 如果不是 dva 2.0 请删除 end */
   }
@@ -57,12 +64,12 @@ export default class Home extends React.Component {
         dataSource={Footer00DataSource}
         isMobile={this.state.isMobile}
       />,
-    ]
+    ];
     return (
       <div
         className="templates-wrapper"
         ref={d => {
-          this.dom = d
+          this.dom = d;
         }}
       >
         <Headers />
@@ -70,6 +77,6 @@ export default class Home extends React.Component {
         {this.state.show && children}
         {/* 如果不是 dva 2.0 替换成 {children} end */}
       </div>
-    )
+    );
   }
 }
