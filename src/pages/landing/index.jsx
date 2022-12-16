@@ -28,11 +28,6 @@ export default class Home extends React.Component {
   }
 
   componentDidMount() {
-    // get url
-    userName = getUrlInfo(window.location.href)
-    localStorage.setItem('userName', userName)
-    // Login
-    Login(userName)
     // 适配手机屏幕;
     enquireScreen(b => {
       this.setState({ isMobile: !!b })
